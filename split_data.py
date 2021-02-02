@@ -7,11 +7,12 @@ from shutil import copyfile
 import pandas as pd
 import numpy as np
 import csv
+#import sklearn
 from pathlib import Path
 from sklearn import preprocessing, model_selection
 
-img_width = 640
-img_height = 480
+img_width = 512
+img_height = 366
 
 def width(df):
   return int(df.xmax - df.xmin)
@@ -52,16 +53,25 @@ df['height_norm'] = df['height'].apply(h_norm)
 df_train, df_valid = model_selection.train_test_split(df, test_size=0.1, random_state=13, shuffle=True)
 print(df_train.shape, df_valid.shape)
 
-os.mkdir('/content/bcc/')
-os.mkdir('/content/bcc/images/')
-os.mkdir('/content/bcc/images/train/')
-os.mkdir('/content/bcc/images/valid/')
+src_img_path = "data/facemask/images/"
+src_label_path = "data/facemask/annotations/"
 
-os.mkdir('/content/bcc/labels/')
-os.mkdir('/content/bcc/labels/train/')
-os.mkdir('/content/bcc/labels/valid/')
+train_img_path = "/dataset/facemask/images/train/"
+train_label_path = "/dataset/facemask/labels/train/"
 
-def segregate_data(df, img_path, label_path, train_img_path, train_label_path):
+valid_img_path = "/dataset/facemask/images/valid/"
+valid_label_path = "/dataset/facemask/labels/valid/"
+
+#os.mkdir('/dataset/facemask/')
+#os.mkdir('/dataset/facemask/images/')
+os.makedirs(train_img_path,exist_ok=True)
+os.makedirs(valid_img_path,exist_ok=True)
+
+#os.mkdir('/dataset/facemask/labels/')
+os.makedirs(train_label_path,exist_ok=True)
+os.makedirs(valid_label_path,exist_ok=True)
+
+def split_data(df, img_path, label_path, train_img_path, train_label_path):
   filenames = []
   for filename in df.filename:
     filenames.append(filename)
@@ -80,20 +90,13 @@ def segregate_data(df, img_path, label_path, train_img_path, train_label_path):
     shutil.copyfile(os.path.join(img_path,row.prev_filename), os.path.join(train_img_path,row.prev_filename))
  
 ## Apply function ## 
-src_img_path = "/content/BCCD_Dataset/BCCD/JPEGImages/"
-src_label_path = "/content/BCCD_Dataset/BCCD/Annotations/"
 
-train_img_path = "/content/bcc/images/train"
-train_label_path = "/content/bcc/labels/train"
 
-valid_img_path = "/content/bcc/images/valid"
-valid_label_path = "/content/bcc/labels/valid"
+split_data(df_train, src_img_path, src_label_path, train_img_path, train_label_path)
+split_data(df_valid, src_img_path, src_label_path, valid_img_path, valid_label_path)
 
-segregate_data(df_train, src_img_path, src_label_path, train_img_path, train_label_path)
-segregate_data(df_valid, src_img_path, src_label_path, valid_img_path, valid_label_path)
+print("No. of Training images", len(os.listdir(train_img_path)))
+print("No. of Training labels", len(os.listdir(train_label_path)))
 
-print("No. of Training images", len(os.listdir('/content/bcc/images/train')))
-print("No. of Training labels", len(os.listdir('/content/bcc/labels/train')))
-
-print("No. of valid images", len(os.listdir('/content/bcc/images/valid')))
-print("No. of valid labels", len(os.listdir('/content/bcc/labels/valid')))
+print("No. of valid images", len(os.listdir(valid_img_path)))
+print("No. of valid labels", len(os.listdir(valid_label_path)))
