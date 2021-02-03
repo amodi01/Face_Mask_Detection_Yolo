@@ -56,11 +56,11 @@ print(df_train.shape, df_valid.shape)
 src_img_path = "data/facemask/images/"
 src_label_path = "data/facemask/annotations/"
 
-train_img_path = "/dataset/facemask/images/train/"
-train_label_path = "/dataset/facemask/labels/train/"
+train_img_path = "data/images/train/"
+train_label_path = "data/labels/train/"
 
-valid_img_path = "/dataset/facemask/images/valid/"
-valid_label_path = "/dataset/facemask/labels/valid/"
+valid_img_path = "data/images/valid/"
+valid_label_path = "data/labels/valid/"
 
 #os.mkdir('/dataset/facemask/')
 #os.mkdir('/dataset/facemask/images/')
